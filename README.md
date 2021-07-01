@@ -1,4 +1,4 @@
-![GitHub Logo](wwwroot/statics/images/1.jpg)
+
 
 
 This is a simple http server written in C using muxing!
