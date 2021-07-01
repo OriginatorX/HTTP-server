@@ -1,0 +1,49 @@
+body,
+html {
+    font-family: "Gravity-Book", sans-serif;
+    color: rgb(253, 249, 249);
+    height: 100%;
+}
+
+.wrapper {
+    height: 100%;
+    line-height: 1.5;
+    word-spacing: 4px;
+    letter-spacing: 1px;
+}
+
+.fixed-back {
+    background-attachment: fixed;
+    background-position: center center;
+    width: 100%;
+    height: 100vh;
+    display: table;
+    background-size: cover;
+}
+
+.fixed-back .content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 60px;
+    font-family: 'Caveat', cursive;
+}
+
+.scrolling {
+    background-color: #0f0f0a;
+    text-align: center;
+    padding: 10px 70px;
+    font-size: 25px;
+}
+
+.bg-first {
+    background-image: url(../images/8.jpg);
+}
+
+.bg-second {
+    background-image: url(../images/7.jpg);
+}
+
+.bg-third {
+    background-image: url(../images/footer.jpg);
+}
