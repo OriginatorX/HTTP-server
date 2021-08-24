@@ -1,7 +1,7 @@
 # HTTP Server - [Try using!](http://fetisoff.herokuapp.com)
 ## Platform 
-Linux
-build: root~ $make
+### Linux
+### build: root~ $make
 ![GitHub Logo](wwwroot/statics/images/logo.png)
 
 **This is a simple http server written in C using muxing!**
