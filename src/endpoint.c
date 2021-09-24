@@ -17,7 +17,10 @@
 Http * init_context(int32_t family, int32_t socket_type, int32_t flag) {
 
     Http *http = (Http*) malloc(sizeof(Http));
-    if (!http) { perror("malloc");  return http; }
+    if (!http) { 
+        perror("malloc");  
+        return http; 
+    }
     http->state_code  = FALSE;
     
     http->req.buffer  = (char*) malloc(PAGE / 4); 
@@ -26,8 +29,10 @@ Http * init_context(int32_t family, int32_t socket_type, int32_t flag) {
     http->res.buffer  = (char*) malloc(PAGE * 4); 
     http->res.buf_len = PAGE * 4;
    
-    if (!http->req.buffer) perror("init_context, req->buffer malloc");
-    if (!http->res.buffer) perror("init_context, res->buffer malloc");
+    if (!http->req.buffer) 
+        perror("init_context, req->buffer malloc");
+    if (!http->res.buffer) 
+        perror("init_context, res->buffer malloc");
 
     memset(&http->hints, 0, sizeof http->hints);
     http->hints.ai_family   = AF_UNSPEC;  
@@ -45,7 +50,8 @@ Http* http_server(Http *http, char *rootDir, char *port) {
     http->port                = port;
     struct addrinfo *iterator = NULL;
 
-    for (int8_t j = 0, *i = rootDir; *i != '\0'; i++, j++) http->staticDir[j] = rootDir[j];
+    for (int8_t j = 0, *i = rootDir; *i != '\0'; i++, j++) 
+        http->staticDir[j] = rootDir[j];
 
     if ((http->multiplexor = (multiplex_t*) malloc(sizeof(multiplex_t))) == NULL) 
         perror("http_server, storage malloc");
@@ -63,15 +69,20 @@ Http* http_server(Http *http, char *rootDir, char *port) {
                 perror("http_server, socket"); continue;
         }
         if (setsockopt(http->listener, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) == ERROR) {
-            perror("http_server, setsockopt"); return http;
+            perror("http_server, setsockopt"); 
+            return http;
         }
         if (bind(http->listener, iterator->ai_addr, iterator->ai_addrlen) == ERROR) {
-            perror("http_server, bind"); return http;
-        }   break;
-    }   freeaddrinfo(http->service);
+            perror("http_server, bind"); 
+            return http;
+        }   
+        break;
+    }   
+    freeaddrinfo(http->service);
 
     if (iterator == NULL) { 
-        perror("http_server not address information"); return http; 
+        perror("http_server not address information"); 
+        return http; 
     } 
 
     FD_ZERO(&http->multiplexor->allSet);
@@ -83,7 +94,8 @@ Http* http_server(Http *http, char *rootDir, char *port) {
 
 bool_t eng_listen(Http *http) {
     if (listen(http->listener, MAX_CONNECTIONS) == ERROR) {
-        perror("http_server, listen"); return FALSE;
+        perror("http_server, listen"); 
+        return FALSE;
     }
     printf("server run on port %s \n", http->port);
 
@@ -114,19 +126,23 @@ bool_t eng_listen(Http *http) {
 
             for (i = 0; i < FD_SETSIZE; i++) {
                 if (http->multiplexor->client[i] < 0) { 
-                    http->multiplexor->client[i] = http->multiplexor->connection_fd; break;
+                    http->multiplexor->client[i] = http->multiplexor->connection_fd; 
+                    break;
                 }
             }
             FD_SET(http->multiplexor->connection_fd, &http->multiplexor->allSet);
 
             if (http->multiplexor->connection_fd > http->multiplexor->max_fd) 
                 http->multiplexor->max_fd = http->multiplexor->connection_fd;
-            if (i > http->multiplexor->max_len) http->multiplexor->max_len = i;
-            if (http->multiplexor->ready_fd <= 0) continue;
+            if (i > http->multiplexor->max_len) 
+                http->multiplexor->max_len = i;
+            if (http->multiplexor->ready_fd <= 0) 
+                continue;
         }
         
         for (size_t i = 0; i <= http->multiplexor->max_len + 1; i++) {
-            if ((http->multiplexor->socket_fd = http->multiplexor->client[i]) < 0) continue;
+            if ((http->multiplexor->socket_fd = http->multiplexor->client[i]) < 0) 
+                continue;
 
             if (FD_ISSET(http->multiplexor->socket_fd, &http->multiplexor->readSet)) {
                 if ((http->req.read_bytes = read(http->multiplexor->socket_fd, 
@@ -166,8 +182,10 @@ bool_t eng_listen(Http *http) {
 }
 
 void * get_ip_address(struct sockaddr *sa) {
-    if (sa->sa_family == AF_INET) return &(((struct sockaddr_in*)sa)->sin_addr);
-    else return &(((struct sockaddr_in6*)sa)->sin6_addr);
+    if (sa->sa_family == AF_INET) 
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    else 
+        return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
 mime_t mime_type(char *d_name) {
@@ -186,7 +204,9 @@ mime_t mime_type(char *d_name) {
         for (k = 0; d_name[k] != '.'; k++);
         for (i = k; d_name[i] != '\0'; i++, j++) 
             file_extension[j]  = d_name[i];
-    } else  file_extension[0]  = '/';
+    } 
+    else  
+        file_extension[0]  = '/';
 
     const int number_of_mime = 10;
     char* keys_val[10][2] = {
@@ -240,16 +260,21 @@ file_t responseFiller(Http *http) {
     parser(http, req_path, catalog);
 
     strcat(catalog, req_path);
-    if (strcmp("/", req_path) == 0) strcat(catalog, "index.html");
+    if (strcmp("/", req_path) == 0) 
+        strcat(catalog, "index.html");
+
     mime_t mime = mime_type(req_path);
     file = readFile(catalog);
 
     if (file.state_code == FALSE) {
         if ((file.buffer = (char*) malloc(sizeof not_404_found)) == NULL) 
             perror("parser, malloc");
+
         for (size_t i = 0; i < sizeof not_404_found; i++)
             file.buffer[i] = not_404_found[i];
+
         printf("%ld\n", sizeof not_404_found);
+
         file.real_quant_bytes = sizeof not_404_found; 
         mime.type = "text/html";
         code = "404\tNOT\tFOUND";
@@ -280,8 +305,12 @@ file_t responseFiller(Http *http) {
 }
 
 void leave_context(Http *http) {
-    if (http->req.buffer)  free(http->req.buffer);
-    if (http->res.buffer)  free(http->res.buffer);
-    if (http->multiplexor) free(http->multiplexor);
-    if (http)              free(http);
+    if (http->req.buffer)  
+        free(http->req.buffer);
+    if (http->res.buffer)  
+        free(http->res.buffer);
+    if (http->multiplexor) 
+        free(http->multiplexor);
+    if (http)              
+        free(http);
 }
