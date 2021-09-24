@@ -187,17 +187,28 @@ mime_t mime_type(char *d_name) {
         for (i = k; d_name[i] != '\0'; i++, j++) 
             file_extension[j]  = d_name[i];
     } else  file_extension[0]  = '/';
+
+    const int number_of_mime = 10;
+    char* keys_val[10][2] = {
+        {"/"    ,    "text/html"        },
+        {".html",    "text/html"        },
+        {".htm" ,    "text/html"        },
+        {".css" ,    "text/css"         },
+        {".js"  ,    "text/javascript"  },
+        {".jpg" ,    "image/jpeg"       },
+        {".png" ,    "image/png"        },
+        {".ico" ,    "image/x-icon"     },
+        {".mp4" ,    "video/mp4"        },
+        {".json",    "application/json" }
+    };
+
+    for (size_t i = 0; i < number_of_mime; i++) {
+        if (strcmp(keys_val[i][0], file_extension) == 0) {
+            mime.type = keys_val[i][1];
+            break;
+        }
+    }
     
-    if (strcmp("/"    , file_extension) == 0) { mime.type = "text/html"        ; }
-    if (strcmp(".html", file_extension) == 0) { mime.type = "text/html"        ; }
-    if (strcmp(".htm" , file_extension) == 0) { mime.type = "text/html"        ; }
-    if (strcmp(".css" , file_extension) == 0) { mime.type = "text/css"         ; }
-    if (strcmp(".js"  , file_extension) == 0) { mime.type = "text/javascript"  ; }
-    if (strcmp(".jpg" , file_extension) == 0) { mime.type = "image/jpeg"       ; }
-    if (strcmp(".png" , file_extension) == 0) { mime.type = "image/png"        ; }
-    if (strcmp(".ico" , file_extension) == 0) { mime.type = "image/x-icon"     ; }
-    if (strcmp(".mp4" , file_extension) == 0) { mime.type = "video/mp4"        ; }
-    if (strcmp(".json", file_extension) == 0) { mime.type = "application/json" ; } 
     return mime;
 }
 
