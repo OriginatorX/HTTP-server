@@ -14,6 +14,10 @@
 
 # include "../include/endpoint.h"
 
+#define NUMBER_OF_MIME_TYPE 10
+
+extern char not_404_found[512];
+
 Http * init_context(int32_t family, int32_t socket_type, int32_t flag) {
 
     Http *http = (Http*) malloc(sizeof(Http));
@@ -208,8 +212,7 @@ mime_t mime_type(char *d_name) {
     else  
         file_extension[0]  = '/';
 
-    const int number_of_mime = 10;
-    char* keys_val[10][2] = {
+    char* keys_val[NUMBER_OF_MIME_TYPE][2] = {
         {"/"    ,    "text/html"        },
         {".html",    "text/html"        },
         {".htm" ,    "text/html"        },
@@ -222,7 +225,7 @@ mime_t mime_type(char *d_name) {
         {".json",    "application/json" }
     };
 
-    for (size_t i = 0; i < number_of_mime; i++) {
+    for (size_t i = 0; i < NUMBER_OF_MIME_TYPE; i++) {
         if (strcmp(keys_val[i][0], file_extension) == 0) {
             mime.type = keys_val[i][1];
             break;

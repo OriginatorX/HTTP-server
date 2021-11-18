@@ -12,7 +12,6 @@
 # define CRLF      "\r\n\r\n"
 
 typedef int32_t socket_t;
-extern char not_404_found[512];
 
 typedef enum {
     FALSE = 0,
