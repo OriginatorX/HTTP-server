@@ -1,4 +1,4 @@
-# HTTP Server - [Try using!](http://fetisoff.herokuapp.com)
+# HTTP Server
 ## Platform 
 ### Linux
 ### build: ~$ 
